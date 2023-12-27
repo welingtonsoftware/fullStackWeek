@@ -5,11 +5,25 @@ import { CartContext } from "@/providers/cart";
 import CartItem from "./cart-item";
 import computeProductTotalPrice from "@/helpers/product";
 import { Separator } from "./separator";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "./scroll-area";
 import { Button } from "./button";
+import { cretateCheckout } from "@/actions/checkout";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = () => {
   const { products, subtotal, totalDiscount, total } = useContext(CartContext);
+  const handleFinishPurchaseClick = async () => {
+    const checkout = await cretateCheckout(products);
+    console.log(checkout);
+
+    const stripe = await loadStripe(
+      process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
+    )
+    stripe?.redirectToCheckout({
+      sessionId: checkout.id,
+    })
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <Badge
@@ -60,7 +74,12 @@ const Cart = () => {
           <p>Total</p>
           <p> R$ {total.toFixed(2)}</p>
         </div>
-        <Button className="uppercase font-bold mt-7">Finalizar compra</Button>
+        <Button
+          className="uppercase font-bold mt-7"
+          onClick={handleFinishPurchaseClick}
+        >
+          Finalizar compra
+        </Button>
       </div>
     </div>
   );
