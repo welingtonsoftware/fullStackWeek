@@ -29,9 +29,10 @@ const Header = () => {
   const { status, data } = useSession();
 
   const handleLoginClick = async () => {
+    console.log("Recebida requisição em /api/auth/signin", signIn);
     await signIn();
   };
-
+ 
   const handleLogoutClick = async () => {
     await signOut();
   };
@@ -70,14 +71,14 @@ const Header = () => {
               <Separator />
             </div>
           )}
-
+    
           <div className="mt-4 flex flex-col gap-2">
             {status === "unauthenticated" && (
               <Button
                 onClick={handleLoginClick}
                 variant="outline"
                 className="w-full justify-start gap-2"
-              >
+              >    
                 <LogInIcon size={16} />
                 Fazer Login
               </Button>
